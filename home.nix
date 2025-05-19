@@ -85,7 +85,7 @@ in
     _1password-cli
     p7zip
   ];
-  
+
   # Source shell functions
   home.file.".zfunctions".source = ./scripts/shell-functions.sh;
 
@@ -154,6 +154,12 @@ in
             gnused
             (kubectl.overrideAttrs (oldAttrs: {
               version = versions.kubectl;
+              src = pkgs.fetchFromGitHub {
+                owner = "kubernetes";
+                repo = "kubernetes";
+                rev = "v${versions.kubectl}";
+                hash = "sha256-Gcj9YhK/IQEAL/O80bgzLGRMhabs7cTPKLYeUtECNZk=";
+              };
             }))
           ]
         )

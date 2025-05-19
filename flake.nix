@@ -50,11 +50,8 @@
                 owner = "kubernetes";
                 repo = "kubernetes";
                 rev = "v${versions.kubectl}";
-                hash = pkgs.lib.fakeSha256; # Will fail with correct hash to use
-                # Replace the hash with correct one after first build failure
-                # or set __intentionallyOverridingVersion = true; to silence warning
+                hash = "sha256-Gcj9YhK/IQEAL/O80bgzLGRMhabs7cTPKLYeUtECNZk=";
               };
-              __intentionallyOverridingVersion = true;
             }))
             kubectx
             kubelogin
@@ -123,19 +120,19 @@
             };
             options = "--delete-older-than 30d";
           };
-          
+
           # Auto-optimize nix store
           nix.optimise.automatic = true;
-          
+
           # Setup auto-cleanup for old system generations
           launchd.daemons.nix-cleanup-old-generations = {
             script = ''
               # Keep the last 5 generations, delete older ones
               nix-env --delete-generations old +5
-              
+
               # Also clean up old home-manager generations
               find /nix/var/nix/profiles/per-user/nick/home-manager* -type l | sort -Vr | tail -n +5 | xargs rm -f || true
-              
+
               # Finally collect garbage to free up space
               nix-collect-garbage --delete-old
             '';
