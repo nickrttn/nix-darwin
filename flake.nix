@@ -46,6 +46,15 @@
             kapp
             (kubectl.overrideAttrs (oldAttrs: {
               version = versions.kubectl;
+              src = pkgs.fetchFromGitHub {
+                owner = "kubernetes";
+                repo = "kubernetes";
+                rev = "v${versions.kubectl}";
+                hash = pkgs.lib.fakeSha256; # Will fail with correct hash to use
+                # Replace the hash with correct one after first build failure
+                # or set __intentionallyOverridingVersion = true; to silence warning
+              };
+              __intentionallyOverridingVersion = true;
             }))
             kubectx
             kubelogin
