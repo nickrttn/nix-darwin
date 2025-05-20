@@ -222,6 +222,7 @@ in
       gbsc = "git branch --sort=-committerdate";
       hm = "home-manager";
       ls = "eza";
+      lst = "eza --tree --level 2";
       pnpm = "corepack pnpm";
       gac = "git add -A && git commit";
     };
@@ -294,6 +295,10 @@ in
       export PATH="$HOME/.jenv/bin:$PATH"
       eval "$(jenv init -)"
 
+      # Source shell functions
+      if [[ -f "$HOME/.zfunctions" ]]; then
+          source "$HOME/.zfunctions"
+      fi
     '';
   };
 
@@ -364,9 +369,6 @@ in
     };
     difftastic = {
       enable = true;
-    };
-    aliases = {
-      # Using shellAliases for the add-commit-all functionality now (gac)
     };
     extraConfig = {
       core = {

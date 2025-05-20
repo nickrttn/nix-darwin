@@ -111,7 +111,6 @@ ndu() {
   fi
 
   echo "Rebuilding darwin configuration..."
-  # This is the only part that needs sudo
   sudo darwin-rebuild switch
 
   # Get the new system profile generation number
