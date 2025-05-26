@@ -19,21 +19,24 @@
       cachix,
     }:
     let
-      versions = {
-        kubectl = "1.29.13";
-        python = "3.10.13";
-        terraform = "1.1.3";
+      myLib = import ./lib { 
+        lib = nixpkgs.lib; 
+        pkgs = nixpkgs.legacyPackages.aarch64-darwin; 
       };
-      config = {
-        awsProdSsoRole = "EKS_Access";
-      };
+      
       configuration =
         { pkgs, ... }:
         {
-          # List packages installed in system profile. To search by name, run:
-          # $ nix-env -qaP | grep wget
+          imports = [
+            ./modules/development/kubernetes.nix
+            ./modules/development/terraform.nix
+            ./modules/development/python.nix
+            ./modules/programs/shell.nix
+            ./modules/system/homebrew.nix
+          ];
+
+          # List packages installed in system profile
           environment.systemPackages = with pkgs; [
-            awscli2
             bash
             bat
             btop
@@ -45,28 +48,13 @@
             gron
             jq
             kapp
-            (kubectl.overrideAttrs (oldAttrs: {
-              version = versions.kubectl;
-              src = pkgs.fetchFromGitHub {
-                owner = "kubernetes";
-                repo = "kubernetes";
-                rev = "v${versions.kubectl}";
-                hash = "sha256-Gcj9YhK/IQEAL/O80bgzLGRMhabs7cTPKLYeUtECNZk=";
-              };
-            }))
-            kubectx
-            kubelogin
-            kubernetes-helm
-            kustomize
             nil
             nixd
             nix-index
             nixfmt-rfc-style
             nodejs_22
             postgresql
-            pyenv
             ripgrep
-            stern
             vim
             yq
             zsh
@@ -108,7 +96,6 @@
             ];
             max-jobs = "auto";
             cores = 0;
-
           };
 
           # Configure garbage collection
@@ -160,12 +147,6 @@
 
           system.primaryUser = "nick";
 
-          # Run custom commands after activation
-          # system.activationScripts.postActivation.text = ''
-          #   echo "Setting npm global prefix..."
-          #   ${pkgs.nodejs_20}/bin/npm config set prefix ~/.npm-global
-          # '';
-
           # The platform the configuration will be used on.
           nixpkgs.hostPlatform = "aarch64-darwin";
           nixpkgs.config = {
@@ -181,38 +162,6 @@
             "Thunderbolt Bridge"
             "Wi-Fi"
           ];
-
-          homebrew = {
-            enable = true;
-
-            caskArgs = {
-              appdir = "~/Applications";
-              require_sha = true;
-            };
-
-            onActivation = {
-              autoUpdate = true;
-              upgrade = true;
-              cleanup = "zap";
-            };
-
-            taps = [
-              "carvel-dev/carvel"
-              "int128/kubelogin"
-            ];
-
-            brews = [
-              "act"
-              "int128/kubelogin/kubelogin"
-              "jenv"
-              "tfenv"
-            ];
-
-            casks = [
-              "orbstack"
-              "tableplus"
-            ];
-          };
 
           security.pam.services.sudo_local.touchIdAuth = true;
 
@@ -246,16 +195,7 @@
             home-manager.useUserPackages = true;
             home-manager.verbose = true;
             home-manager.backupFileExtension = "backup";
-            home-manager.users.nick =
-              { pkgs, lib, ... }:
-              import ./home.nix {
-                inherit
-                  config
-                  pkgs
-                  lib
-                  versions
-                  ;
-              };
+            home-manager.users.nick = import ./users/nick.nix;
           }
         ];
       };
