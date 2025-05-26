@@ -41,6 +41,7 @@
             curl
             eza
             git
+            go
             gron
             jq
             kapp

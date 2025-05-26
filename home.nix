@@ -224,7 +224,7 @@ in
       ls = "eza";
       lst = "eza --tree --level 2";
       pnpm = "corepack pnpm";
-      gac = "git add -A && git commit";
+      gac = "git add -A && git commit -m";
     };
 
     historySubstringSearch = {
