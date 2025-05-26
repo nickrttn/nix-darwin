@@ -246,4 +246,15 @@ in
       kubectl config use-context "eks-staging"
     '';
   };
+
+  programs.neovim = {
+    enable = true;
+    plugins = with pkgs.vimPlugins; [
+      telescope-nvim
+      plenary-nvim
+    ];
+    extraLuaConfig = ''
+      require('telescope').setup{}
+    '';
+  };
 }
