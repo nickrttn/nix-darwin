@@ -19,11 +19,11 @@
       cachix,
     }:
     let
-      myLib = import ./lib { 
-        lib = nixpkgs.lib; 
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin; 
+      myLib = import ./lib {
+        lib = nixpkgs.lib;
+        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
       };
-      
+
       configuration =
         { pkgs, ... }:
         {
@@ -52,7 +52,7 @@
             nixd
             nix-index
             nixfmt-rfc-style
-            nodejs_22
+            nodejs_20
             postgresql
             ripgrep
             vim
